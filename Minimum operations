@@ -1,0 +1,27 @@
+import math
+def solve (N, A):
+    total_sum = sum(A)
+    if total_sum > 0:
+        return -1
+   
+    X = -total_sum
+    required_adds = 0
+    for val in A:
+        if val < 0:
+            required_adds += (abs(val) + 1) // 2
+    if X >= required_adds:
+        return X
+    else:
+        return -1
+T_str = input().strip()
+if T_str:
+    T = int(T_str)
+    for _ in range(T):
+        try:
+            line1 = input().split()
+            if not line1: break
+            N = int(line1[0])
+            A = list(map(int, input().split()))
+            print(solve(N, A))
+        except EOFError:
+            break
