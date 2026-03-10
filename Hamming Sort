@@ -1,0 +1,15 @@
+def solve (N, K, A):
+    A.sort(key=lambda x: (bin(x ^ K).count('1'), x)) 
+    return A
+T_str = input().strip()
+if T_str:
+    T = int(T_str)
+    for _ in range(T):
+        custom_input_1 = list(map(str, input().split()))
+        if not custom_input_1:
+            break
+        N = int(custom_input_1[0])
+        K = int(custom_input_1[1])
+        A = list(map(int, input().split()))
+        out_ = solve(N, K, A)
+        print (' '.join(map(str, out_)))
