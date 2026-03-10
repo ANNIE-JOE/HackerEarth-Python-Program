@@ -1,0 +1,57 @@
+import sys
+class Coin:
+    def __init__(self):
+        self.Val = 0
+    
+    def setvalue(self, val):
+        self.Val = val
+
+class Note:
+    def __init__(self):
+        self.Val = 0
+    
+    def setvalue(self, val):
+        self.Val = val
+class Bag:
+    def __init__(self):
+        self.items = []
+
+    def add(self, t):
+        """Add the coin or note to the bag."""
+        self.items.append(t)
+
+    def Display(self):
+        """Display the denomination of the coin or note."""
+        for item in self.items:
+            print(item.Val)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    it = iter(input_data)
+    n = int(next(it))
+    coin_bag = Bag()
+    note_bag = Bag()
+    
+    for _ in range(n):
+        s = next(it)
+        v = int(next(it))
+        
+        if s.lower() == "coin":
+            c = Coin()
+            c.setvalue(v)
+            coin_bag.add(c)
+        elif s.lower() == "note":
+            n_obj = Note()
+            n_obj.setvalue(v)
+            note_bag.add(n_obj)
+    print("Coins :")
+    coin_bag.Display()
+    
+    print("Notes :")
+    note_bag.Display()
+
+if __name__ == "__main__":
+    solve()    
