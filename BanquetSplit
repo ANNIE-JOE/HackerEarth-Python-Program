@@ -1,0 +1,68 @@
+import sys
+sys.setrecursionlimit(200000)
+
+def solve():
+    input = sys.stdin.read().split()
+    if not input: return
+    ptr = 0
+    
+    t_cases = int(input[ptr])
+    ptr += 1
+    
+    for _ in range(t_cases):
+        n = int(input[ptr])
+        ptr += 1
+        adj = [[] for _ in range(n + 1)]
+        for _ in range(n - 1):
+            u, v = int(input[ptr]), int(input[ptr+1])
+            adj[u].append(v)
+            adj[v].append(u)
+            ptr += 2
+        depth = [0] * (n + 1)
+        LOG = 18
+        up = [[0] * LOG for _ in range(n + 1)]
+        
+        stack = [(1, 0, 0)]
+        visited = [False] * (n + 1)
+        while stack:
+            u, p, d = stack.pop()
+            visited[u] = True
+            depth[u] = d
+            up[u][0] = p
+            for v in adj[u]:
+                if v != p:
+                    stack.append((v, u, d + 1))
+        
+        for j in range(1, LOG):
+            for i in range(1, n + 1):
+                up[i][j] = up[up[i][j-1]][j-1]
+                
+        def get_lca(u, v):
+            if depth[u] < depth[v]:
+                u, v = v, u
+            for j in range(LOG-1, -1, -1):
+                if depth[u] - (1 << j) >= depth[v]:
+                    u = up[u][j]
+            if u == v: return u
+            for j in range(LOG-1, -1, -1):
+                if up[u][j] != up[v][j]:
+                    u = up[u][j]
+                    v = up[v][j]
+            return up[u][0]
+
+        q = int(input[ptr])
+        ptr += 1
+        for _ in range(q):
+            x, y = int(input[ptr]), int(input[ptr+1])
+            ptr += 2
+            
+            lca = get_lca(x, y)
+            distance = depth[x] + depth[y] - 2 * depth[lca]
+            if distance % 2 != 0:
+                print("Yes")
+            else:
+                print("No")
+                print(f"1 {distance + 1}")
+
+if __name__ == "__main__":
+    solve()
