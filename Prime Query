@@ -1,0 +1,31 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return  
+    idx = 0
+    t = int(input_data[idx]); idx += 1
+    for _ in range(t):
+        n = int(input_data[idx]); idx += 1
+        arr = list(map(int, input_data[idx : idx + n]))
+        idx += n       
+        p0 = [0] * (n + 1)
+        p1 = [0] * (n + 1)
+        for i in range(n):
+            p0[i+1] = p0[i] + (1 if arr[i] == 0 else 0)
+            p1[i+1] = p1[i] + (1 if arr[i] == 1 else 0)
+            
+        q = int(input_data[idx]); idx += 1
+        for _ in range(q):
+            l, r = int(input_data[idx]), int(input_data[idx+1])
+            idx += 2
+            
+            k = r - l + 1
+            total_pairs = k * (k - 1) // 2
+            
+            z = p0[r] - p0[l-1]
+            o = p1[r] - p1[l-1]
+            
+            invalid = (z * (z - 1) // 2) + (z * o)
+            print(total_pairs - invalid)
+
+solve()
