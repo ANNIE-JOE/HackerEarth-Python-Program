@@ -1,0 +1,37 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return   
+    idx = 0
+    t = int(input_data[idx])
+    idx += 1
+    MOD = 998244353
+    results = []
+    for _ in range(t):
+        n = int(input_data[idx])
+        idx += 1
+        arr = input_data[idx : idx + n]
+        idx += n
+        s0, s1 = 1, 0
+        current_p = 0
+        ans = 0
+        
+        for i in range(n):
+            val = int(arr[i])
+            b_i = bin(val).count('1') % 2
+            current_p ^= b_i
+            
+            if current_p == 0:
+                ans = s1
+                s0 = (s0 + ans) % MOD
+            else:
+                ans = s0
+                s1 = (s1 + ans) % MOD
+        
+        results.append(str(ans))
+        
+    sys.stdout.write("\n".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
