@@ -1,0 +1,35 @@
+import sys
+sys.setrecursionlimit(2000000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    binary_strings = input_data[1:]
+    trie = [[-1, -1, 0]]
+    total_special_sum = 0
+    MOD = 10**9 + 7
+    
+    for s in binary_strings:
+        curr_node_idx = 0
+        zeros_on_path = 0
+        
+        for char in s:
+            if char == '0':
+                zeros_on_path += 1
+            child_bit = 0 if char == '0' else 1
+            
+            if trie[curr_node_idx][child_bit] == -1:
+                new_node_idx = len(trie)
+                trie[curr_node_idx][child_bit] = new_node_idx
+                trie.append([-1, -1, zeros_on_path])
+                if zeros_on_path > 1:
+                    total_special_sum = (total_special_sum + (zeros_on_path - 1)) % MOD
+
+            curr_node_idx = trie[curr_node_idx][child_bit]
+            
+    sys.stdout.write(str(total_special_sum) + '\n')
+
+if __name__ == "__main__":
+    solve()
