@@ -1,0 +1,43 @@
+import sys
+
+def solve():
+    input = sys.stdin.read().split()
+    if not input: return
+    ptr = 0
+    t = int(input[ptr])
+    ptr += 1
+    results = []
+    for _ in range(t):
+        n = int(input[ptr])
+        m = int(input[ptr+1])
+        ptr += 2
+        A = list(map(int, input[ptr:ptr+n]))
+        ptr += n
+        B = list(map(int, input[ptr:ptr+m]))
+        ptr += m        
+        if sum(A) != sum(B):
+            results.append("-1")
+            continue
+            
+        i, j = 0, 0
+        ans = 0
+        while i < n and j < m:
+            sumA = A[i]
+            sumB = B[j]
+            i += 1
+            j += 1
+            
+            while sumA != sumB:
+                if sumA < sumB:
+                    sumA += A[i]
+                    i += 1
+                else:
+                    sumB += B[j]
+                    j += 1
+            ans += 1
+        results.append(str(ans))
+        
+    sys.stdout.write("\n".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
