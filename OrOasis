@@ -1,0 +1,54 @@
+def solve():
+    import sys
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    
+    idx = 0
+    T = int(input_data[idx]); idx += 1
+    for _ in range(T):
+        N = int(input_data[idx]); idx += 1
+        A = [int(x) for x in input_data[idx:idx+N]]; idx += N
+        
+        total_or = 0
+        for x in A: total_or |= x
+        pref = [0] * (N + 1)
+        suff = [0] * (N + 1)
+        for i in range(N): pref[i+1] = pref[i] | A[i]
+        for i in range(N-1, -1, -1): suff[i] = suff[i+1] | A[i]
+        
+        min_len = N + 1
+        count = 0
+        bit_counts = [0] * 32
+        curr_or = 0
+        l = 0
+        for r in range(N):
+            curr_or |= A[r]
+            for bit in range(32):
+                if (A[r] >> bit) & 1: bit_counts[bit] += 1
+            
+            while l <= r:
+                out_or = pref[l] | suff[r+1]
+                
+                if curr_or == total_or and out_or == total_or:
+                    length = r - l + 1
+                    if length < min_len:
+                        min_len = length
+                        count = 1
+                    elif length == min_len:
+                        count += 1
+                    val = A[l]
+                    for bit in range(32):
+                        if (val >> bit) & 1:
+                            bit_counts[bit] -= 1
+                            if bit_counts[bit] == 0:
+                                curr_or &= ~(1 << bit)
+                    l += 1
+                else:
+                    break
+                    
+        if min_len > N:
+            print("-1")
+        else:
+            print(f"{min_len} {count}")
+
+solve()
