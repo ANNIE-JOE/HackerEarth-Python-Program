@@ -1,0 +1,25 @@
+def solve(n, nums):
+    def get_digit_sum(num):
+        s = 0
+        num = abs(num) 
+        while num:
+            s += num % 10
+            num //= 10
+        return s
+    counts = {}
+    for x in nums:
+        d_sum = get_digit_sum(x)
+        counts[d_sum] = counts.get(d_sum, 0) + 1
+    
+    total_pairs = 0
+    for k in counts.values():
+        if k > 1:
+            total_pairs += (k * (k - 1)) // 2
+            
+    return total_pairs
+n_val = input().strip()
+if n_val:
+    n = int(n_val)
+    nums = list(map(int, input().split()))
+    out_ = solve(n, nums)
+    print(out_)
