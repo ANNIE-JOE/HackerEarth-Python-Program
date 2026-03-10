@@ -1,0 +1,22 @@
+def solve (N, A):
+    if N == 1:
+        return 0 if A[0] == 0 else -1
+    total_sum = sum(A)
+    if total_sum % (N - 1) != 0:
+        return -1 
+    S = total_sum // (N - 1)
+    for x in A:
+        if x > S:
+            return -1            
+    return S
+import sys
+input_data = sys.stdin.read().split()
+if input_data:
+    T = int(input_data[0])
+    pointer = 1
+    for _ in range(T):
+        if pointer < len(input_data):
+            N = int(input_data[pointer])
+            A = list(map(int, input_data[pointer + 1 : pointer + 1 + N]))
+            print(solve(N, A))
+            pointer += 1 + N
