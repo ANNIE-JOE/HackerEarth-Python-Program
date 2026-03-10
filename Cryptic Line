@@ -1,0 +1,56 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    N = int(input_data[ptr]); ptr += 1
+    Q = int(input_data[ptr]); ptr += 1
+    adj = [[] for _ in range(N + 1)]
+    for _ in range(N - 1):
+        if ptr + 1 >= len(input_data): break
+        u = int(input_data[ptr]); v = int(input_data[ptr+1])
+        adj[u].append(v)
+        adj[v].append(u)
+        ptr += 2
+        
+    tin = [0] * (N + 1)
+    tout = [0] * (N + 1)
+    timer = 0
+    stack = [(1, 0)] 
+    visited_idx = [0] * (N + 1) 
+    
+    while stack:
+        u, p = stack[-1]
+        
+        if visited_idx[u] == 0:
+            timer += 1
+            tin[u] = timer
+            
+        found_child = False
+        while visited_idx[u] < len(adj[u]):
+            v = adj[u][visited_idx[u]]
+            visited_idx[u] += 1
+            if v != p:
+                stack.append((v, u))
+                found_child = True
+                break       
+        if not found_child:
+            tout[u] = timer
+            stack.pop()
+    results = []
+    for _ in range(Q):
+        if ptr + 1 >= len(input_data): break
+        u = int(input_data[ptr]); v = int(input_data[ptr+1])
+        ptr += 2
+        if u <= N and v <= N and tin[u] <= tin[v] and tout[u] >= tout[v]:
+            results.append("YES")
+        else:
+            results.append("NO")
+            
+    sys.stdout.write("\n".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
