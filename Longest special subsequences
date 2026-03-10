@@ -1,0 +1,24 @@
+def longest_special_subseq(n, k, s):
+    dp = [0] * 26  
+    for char in s:
+        curr_idx = ord(char) - ord('a')
+        start = max(0, curr_idx - k)
+        end = min(25, curr_idx + k)
+        max_prev = 0
+        for i in range(start, end + 1):
+            if dp[i] > max_prev:
+                max_prev = dp[i]
+        dp[curr_idx] = max_prev + 1           
+    return max(dp)
+import sys
+input_data = sys.stdin.read().split()
+if input_data:
+    t = int(input_data[0])
+    pointer = 1
+    for _ in range(t):
+        if pointer + 2 < len(input_data):
+            n = int(input_data[pointer])
+            k = int(input_data[pointer + 1])
+            s = input_data[pointer + 2]
+            print(longest_special_subseq(n, k, s))
+            pointer += 3
