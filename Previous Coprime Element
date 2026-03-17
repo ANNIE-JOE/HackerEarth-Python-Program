@@ -1,0 +1,32 @@
+import sys
+import math
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return  
+    ptr = 0
+    t_str = input_data[ptr]
+    t = int(t_str)
+    ptr += 1  
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        arr = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        last_seen = {}
+        ans = []
+        for i in range(n):
+            current_val = arr[i]
+            best_idx = -1
+            for val, last_idx in last_seen.items():
+                if math.gcd(val, current_val) == 1:
+                    if last_idx > best_idx:
+                        best_idx = last_idx
+            ans.append(str(best_idx))
+            last_seen[current_val] = i           
+        results.append(" ".join(ans))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
