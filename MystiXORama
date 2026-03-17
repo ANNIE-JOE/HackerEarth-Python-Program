@@ -1,0 +1,46 @@
+import sys
+input = sys.stdin.read().split()
+def solve():
+    if not input: return
+    ptr = 0
+    t = int(input[ptr]); ptr += 1  
+    for _ in range(t):
+        n = int(input[ptr]); ptr += 1
+        a = list(map(int, input[ptr:ptr+n])); ptr += n
+        q_count = int(input[ptr]); ptr += 1       
+        queries = []
+        for i in range(q_count):
+            l, r, x, y = map(int, input[ptr:ptr+4]); ptr += 4
+            queries.append((l-1, r-1, x, y, i))
+        block_size = int(n**0.5) + 1
+        queries.sort(key=lambda q: (q[0] // block_size, q[1] if (q[0] // block_size) % 2 == 0 else -q[1]))      
+        freq = {} 
+        b = [0] * (n + 1) 
+        def update(val, delta):
+            current_f = freq.get(val, 0)
+            if current_f > 0:
+                b[current_f] ^= val
+            new_f = current_f + delta
+            freq[val] = new_f
+            if new_f > 0:
+                b[new_f] ^= val
+        results = [0] * q_count
+        cur_l, cur_r = 0, -1       
+        for l, r, x, y, idx in queries:
+            while cur_r < r:
+                cur_r += 1
+                update(a[cur_r], 1)
+            while cur_l > l:
+                cur_l -= 1
+                update(a[cur_l], 1)
+            while cur_r > r:
+                update(a[cur_r], -1)
+                cur_r -= 1
+            while cur_l < l:
+                update(a[cur_l], -1)
+                cur_l += 1
+            results[idx] = sum(b[x:y+1])          
+        for res in results:
+            sys.stdout.write(str(res) + '\n')
+if __name__ == "__main__":
+    solve()
