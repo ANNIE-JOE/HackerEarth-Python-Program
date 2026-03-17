@@ -1,0 +1,48 @@
+import sys
+sys.setrecursionlimit(200000)
+def find_bridges(n, adj, edge_to_power):
+    visited = [False] * (n + 1)
+    tin = [-1] * (n + 1)
+    low = [-1] * (n + 1)
+    timer = 0
+    bridge_powers = []
+    def dfs(u, p=-1):
+        nonlocal timer
+        visited[u] = True
+        tin[u] = low[u] = timer
+        timer += 1
+        for v, power in adj[u]:
+            if v == p: continue
+            if visited[v]:
+                low[u] = min(low[u], tin[v])
+            else:
+                dfs(v, u)
+                low[u] = min(low[u], low[v])
+                if low[v] > tin[u]:
+                    bridge_powers.append(power)
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs(i)
+    return bridge_powers
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    n = int(input_data[0])
+    m = int(input_data[1])
+    powers = list(map(int, input_data[2:m+2]))
+    adj = [[] for _ in range(n + 1)]
+    edge_idx = m + 2
+    for i in range(m):
+        u = int(input_data[edge_idx])
+        v = int(input_data[edge_idx + 1])
+        p_val = powers[i]
+        adj[u].append((v, p_val))
+        adj[v].append((u, p_val))
+        edge_idx += 2
+    bridges = find_bridges(n, adj, powers)
+    bridges.sort(reverse=True)
+    max_sam = sum(bridges[i] for i in range(len(bridges)) if i % 2 == 0)
+    min_sam = sum(bridges[i] for i in range(len(bridges)) if i % 2 == 1)  
+    print(f"{max_sam} {min_sam}")
+if __name__ == "__main__":
+    solve()
