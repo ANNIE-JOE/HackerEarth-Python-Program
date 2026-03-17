@@ -1,0 +1,70 @@
+import sys
+MOD = 10**9 + 7
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return    
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    MAX_N = 100005
+    fact = [1] * MAX_N
+    inv = [1] * MAX_N
+    for i in range(1, MAX_N):
+        fact[i] = (fact[i-1] * i) % MOD
+    inv[MAX_N-1] = pow(fact[MAX_N-1], MOD - 2, MOD)
+    for i in range(MAX_N-2, -1, -1):
+        inv[i] = (inv[i+1] * (i+1)) % MOD
+    def nCr(n, r):
+        if r < 0 or r > n:
+            return 0
+        num = fact[n]
+        den = (inv[r] * inv[n-r]) % MOD
+        return (num * den) % MOD
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        x = int(input_data[ptr+1])
+        ptr += 2       
+        values = list(map(int, input_data[ptr:ptr+n]))
+        ptr += n        
+        adj = [[] for _ in range(n + 1)]
+        for i in range(n - 1):
+            u = int(input_data[ptr])
+            v = int(input_data[ptr+1])
+            adj[u].append(v)
+            adj[v].append(u)
+            ptr += 2
+        order = []
+        stack = [1]
+        parent = [0] * (n + 1)
+        visited = [False] * (n + 1)
+        visited[1] = True        
+        while stack:
+            u = stack.pop()
+            order.append(u)
+            for v in adj[u]:
+                if not visited[v]:
+                    visited[v] = True
+                    parent[v] = u
+                    stack.append(v)
+        subtree_sum = [0] * (n + 1)
+        for i in range(1, n + 1):
+            subtree_sum[i] = values[i-1]       
+        cuttable_count = 0
+        for u in reversed(order):
+            if parent[u] != 0:
+                subtree_sum[parent[u]] += subtree_sum[u]
+                if subtree_sum[u] % x == 0:
+                    cuttable_count += 1       
+        total_sum = subtree_sum[1]
+        case_res = []
+        if total_sum % x != 0:
+            case_res = ["0"] * n
+        else:
+            for m in range(1, n + 1):
+                case_res.append(str(nCr(cuttable_count, m - 1)))       
+        results.append(" ".join(case_res))     
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
