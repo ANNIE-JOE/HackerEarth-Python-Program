@@ -1,0 +1,24 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    MAX_N = 1000000 
+    div_sum = [1] * (MAX_N + 1)
+    for i in range(2, MAX_N + 1):
+        for j in range(i, MAX_N + 1, i):
+            div_sum[j] += i
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        m = int(input_data[ptr+1])
+        ptr += 2
+        current_range_sums = div_sum[1:n+1]
+        current_range_sums.sort(reverse=True)   
+        results.append(str(sum(current_range_sums[:m])))   
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
