@@ -1,0 +1,27 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return  
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1   
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        arr = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n       
+        evens = []
+        odds = []       
+        for x in arr:
+            set_bits = bin(x).count('1')     
+            if set_bits % 2 == 0:
+                evens.append(x)
+            else:
+                odds.append(x)
+        evens.sort()
+        odds.sort()
+        result = evens + odds
+        print(*(result))
+if __name__ == "__main__":
+    solve()
