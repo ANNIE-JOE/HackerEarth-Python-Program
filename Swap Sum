@@ -1,0 +1,28 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return   
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr])
+        k = int(input_data[ptr+1])
+        ptr += 2 
+        a = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        b = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        current_sum = sum(a)
+        gains = []
+        for i in range(n):
+            if b[i] > a[i]:
+                gains.append(b[i] - a[i])
+        gains.sort(reverse=True)
+        max_swaps = min(k, len(gains))
+        for i in range(max_swaps):
+            current_sum += gains[i]           
+        print(current_sum)
+if __name__ == "__main__":
+    solve()
