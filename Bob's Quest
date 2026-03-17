@@ -1,0 +1,36 @@
+import sys
+from collections import defaultdict
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return   
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1  
+    for _ in range(t):
+        n = int(input_data[ptr])
+        x = int(input_data[ptr+1])
+        y = int(input_data[ptr+2])
+        ptr += 3
+        a = list(map(int, input_data[ptr:ptr+n]))
+        ptr += n
+        map1, map2 = defaultdict(int), defaultdict(int)
+        l1 = l2 = 0
+        last_y = -1
+        max_len = 0     
+        for r in range(n):
+            val = a[r]
+            if val == y: last_y = r            
+            map1[val] += 1
+            map2[val] += 1
+            while len(map1) > x:
+                map1[a[l1]] -= 1
+                if map1[a[l1]] == 0: del map1[a[l1]]
+                l1 += 1
+            while len(map2) > x - 1:
+                map2[a[l2]] -= 1
+                if map2[a[l2]] == 0: del map2[a[l2]]
+                l2 += 1
+            if len(map1) == x and last_y >= l1:
+                max_len = max(max_len, r - l1 + 1)               
+        print(max_len)
+if __name__ == "__main__":
+    solve()
