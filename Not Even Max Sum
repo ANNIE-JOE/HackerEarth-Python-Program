@@ -1,0 +1,27 @@
+import sys
+def solve():
+    try:
+        line = sys.stdin.readline()
+        if not line:
+            return
+        t = int(line.strip())
+    except ValueError:
+        return
+    for _ in range(t):
+        n = int(sys.stdin.readline().strip())
+        arr = list(map(int, sys.stdin.readline().split()))       
+        total_sum = sum(arr)
+        if total_sum % 2 != 0:
+            print(total_sum)
+        else:
+            smallest_odd = float('inf')
+            for x in arr:
+                if x % 2 != 0:
+                    if x < smallest_odd:
+                        smallest_odd = x
+            if smallest_odd == float('inf'):
+                print(0)
+            else:
+                print(total_sum - smallest_odd)
+if __name__ == "__main__":
+    solve()
