@@ -1,0 +1,26 @@
+import sys
+import math
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return  
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    mod = 10**9 + 7   
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        arr = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        dp = [0] * n
+        for i in range(n):
+            dp[i] = 1 
+            for j in range(i):
+                if math.gcd(arr[j], arr[i]) == 1:
+                    dp[i] = (dp[i] + dp[j]) % mod        
+        results.append(str(sum(dp) % mod))   
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
