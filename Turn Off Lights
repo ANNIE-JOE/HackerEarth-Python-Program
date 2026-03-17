@@ -1,0 +1,31 @@
+import sys
+def can_turn_off(n, k, bulbs, l):
+    ops = 0
+    i = 0
+    while i < n:
+        if bulbs[i] == '1':
+            ops += 1
+            i += l
+        else:
+            i += 1
+    return ops <= k
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    k = int(input_data[1])
+    bulbs = input_data[2]
+    low = 1
+    high = n
+    ans = n
+    while low <= high:
+        mid = (low + high) // 2
+        if can_turn_off(n, k, bulbs, mid):
+            ans = mid
+            high = mid - 1
+        else:
+            low = mid + 1          
+    print(ans)
+if __name__ == "__main__":
+    solve()
