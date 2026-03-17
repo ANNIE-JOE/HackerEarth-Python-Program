@@ -1,0 +1,52 @@
+import sys
+from bisect import bisect_left
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return   
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1  
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        scroll = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        pos = 0
+        distances = []
+        for val in scroll:
+            pos += val
+            distances.append(abs(pos))
+        prefix_max = [0] * n
+        curr_max = 0
+        for i in range(n):
+            curr_max = max(curr_max, distances[i])
+            prefix_max[i] = curr_max           
+        suffix_max = [0] * n
+        curr_max = 0
+        for i in range(n-1, -1, -1):
+            curr_max = max(curr_max, distances[i])
+            suffix_max[i] = curr_max
+        q_count = int(input_data[ptr])
+        ptr += 1    
+        results = []
+        for _ in range(q_count):
+            w = int(input_data[ptr])
+            ptr += 1
+            first_day = bisect_left(prefix_max, w)           
+            if first_day == n:
+                results.append("-1")
+            else:
+                low, high = 0, n - 1
+                last_day = first_day
+                while low <= high:
+                    mid = (low + high) // 2
+                    if suffix_max[mid] >= w:
+                        last_day = mid
+                        low = mid + 1
+                    else:
+                        high = mid - 1               
+                results.append(f"{first_day + 1} {last_day + 1}")      
+        sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
