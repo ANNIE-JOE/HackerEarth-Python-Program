@@ -1,0 +1,31 @@
+import sys
+def count_bits_set_up_to(n, x):
+    if n < 0 or x <= 0:
+        return 0
+    bit_val = 1 << (x - 1)
+    full_period = 1 << x
+    total_numbers = n + 1
+    num_periods = total_numbers // full_period
+    remaining = total_numbers % full_period
+    count = num_periods * bit_val
+    if remaining > bit_val:
+        count += (remaining - bit_val)     
+    return count
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return 
+    ptr = 0
+    q = int(input_data[ptr])
+    ptr += 1  
+    results = []
+    for _ in range(q):
+        l = int(input_data[ptr])
+        r = int(input_data[ptr+1])
+        x = int(input_data[ptr+2])
+        ptr += 3
+        ans = count_bits_set_up_to(r, x) - count_bits_set_up_to(l - 1, x)
+        results.append(str(ans))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
