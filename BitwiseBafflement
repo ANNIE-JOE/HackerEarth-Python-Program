@@ -1,0 +1,51 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return  
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1   
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        a = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        p = [0] * (n + 1)
+        curr_xor = 0
+        for i in range(n):
+            curr_xor ^= a[i]
+            p[i+1] = bin(curr_xor).count('1') % 2
+        count0 = [0] * (n + 2)
+        count1 = [0] * (n + 2)
+        for i in range(n + 1):
+            count0[i+1] = count0[i] + (1 if p[i] == 0 else 0)
+            count1[i+1] = count1[i] + (1 if p[i] == 1 else 0)          
+        def get_count(l, r, parity):
+            if l > r: return 0
+            if parity == 0:
+                return count0[r+1] - count0[l]
+            return count1[r+1] - count1[l]
+        ans = 0
+        curr_ands = []        
+        for i in range(n):
+            val = a[i]
+            new_ands = []
+            for prev_val, start_idx in curr_ands:
+                new_val = prev_val & val
+                if not new_ands or new_ands[-1][0] != new_val:
+                    new_ands.append([new_val, start_idx])
+            if not new_ands or new_ands[-1][0] != val:
+                new_ands.append([val, i])
+            else:
+                pass    
+            curr_ands = new_ands
+            for j in range(len(curr_ands)):
+                val_and, start_idx = curr_ands[j]
+                end_idx = curr_ands[j+1][1] - 1 if j + 1 < len(curr_ands) else i
+                if bin(val_and).count('1') % 2 != 0:
+                    target_parity = p[i+1]
+                    ans += get_count(start_idx, end_idx, target_parity)
+        sys.stdout.write(str(ans) + '\n')
+if __name__ == "__main__":
+    solve()
