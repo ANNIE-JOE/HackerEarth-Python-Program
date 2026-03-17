@@ -1,0 +1,73 @@
+import sys
+sys.setrecursionlimit(200000)
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr]); q = int(input_data[ptr+1]); ptr += 2
+        colors = list(map(int, input_data[ptr:ptr+n])); ptr += n       
+        adj = [[] for _ in range(n + 1)]
+        for _ in range(n - 1):
+            u, v = int(input_data[ptr]), int(input_data[ptr+1]); ptr += 2
+            adj[u].append(v); adj[v].append(u)
+        first, last = [0]*(n+1), [0]*(n+1)
+        tour = []; depth = [0]*(n+1); up = [[0]*20 for _ in range(n+1)]
+        timer = 0       
+        stack = [(1, 0, 0)]
+        while stack:
+            u, p, d = stack.pop()
+            if u > 0: 
+                timer += 1; first[u] = len(tour); tour.append(u)
+                depth[u] = d; up[u][0] = p
+                for i in range(1, 20): up[u][i] = up[up[u][i-1]][i-1]
+                stack.append((-u, p, d)) 
+                for v in adj[u]:
+                    if v != p: stack.append((v, u, d + 1))
+            else: 
+                last[-u] = len(tour); tour.append(-u)
+        def get_lca(u, v):
+            if depth[u] < depth[v]: u, v = v, u
+            for i in range(19, -1, -1):
+                if depth[u] - (1 << i) >= depth[v]: u = up[u][i]
+            if u == v: return u
+            for i in range(19, -1, -1):
+                if up[u][i] != up[v][i]: u, v = up[u][i], up[v][i]
+            return up[u][0]
+        mo_queries = []
+        for i in range(q):
+            u, v = int(input_data[ptr]), int(input_data[ptr+1]); ptr += 2
+            lca = get_lca(u, v)
+            if first[u] > first[v]: u, v = v, u
+            if lca == u: q_l, q_r, q_lca = first[u], first[v], 0
+            else: q_l, q_r, q_lca = last[u], first[v], lca
+            mo_queries.append((q_l, q_r, q_lca, i, depth[u]+depth[v]-2*depth[lca]+1))
+        block = int(len(tour)**0.5) + 1
+        mo_queries.sort(key=lambda x: (x[0]//block, x[1] if (x[0]//block)%2==0 else -x[1]))
+        node_present = [False]*(n+1); color_freq = [0]*(max(colors)+1)
+        cur_pairs = 0; res = [0]*q; cur_l, cur_r = 0, -1
+        def update(node_idx):
+            nonlocal cur_pairs
+            u = tour[node_idx]
+            c = colors[abs(u)-1]
+            if node_present[abs(u)]:
+                color_freq[c] -= 1
+                cur_pairs -= color_freq[c]
+            else:
+                cur_pairs += color_freq[c]
+                color_freq[c] += 1
+            node_present[abs(u)] = not node_present[abs(u)]
+        for q_l, q_r, q_lca, idx, k in mo_queries:
+            while cur_r < q_r: cur_r += 1; update(cur_r)
+            while cur_l > q_l: cur_l -= 1; update(cur_l)
+            while cur_r > q_r: update(cur_r); cur_r -= 1
+            while cur_l < q_l: update(cur_l); cur_l += 1           
+            total_pairs = cur_pairs
+            if q_lca:
+                c = colors[q_lca-1]
+                total_pairs += color_freq[c]        
+            res[idx] = (k * (k - 1) // 2) - total_pairs
+        sys.stdout.write("\n".join(map(str, res)) + "\n")
+if __name__ == "__main__":
+    solve()
