@@ -1,0 +1,42 @@
+import sys
+def can_partition(arr, n, k, max_or_allowed):
+    segments = 1
+    current_or = 0   
+    for x in arr:
+        if x > max_or_allowed:
+            return False
+        if (current_or | x) <= max_or_allowed:
+            current_or |= x
+        else:
+            segments += 1
+            current_or = x           
+            if segments > k:
+                return False
+    return True
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return    
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1  
+    for _ in range(t):
+        n = int(input_data[ptr])
+        k = int(input_data[ptr+1])
+        ptr += 2
+        arr = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        low = max(arr) if arr else 0
+        high = 0
+        for x in arr: high |= x   
+        ans = high
+        while low <= high:
+            mid = (low + high) // 2
+            if can_partition(arr, n, k, mid):
+                ans = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+        print(ans)
+if __name__ == "__main__":
+    solve()
