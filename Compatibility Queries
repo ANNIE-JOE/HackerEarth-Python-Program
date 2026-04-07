@@ -1,0 +1,31 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    a = list(map(int, input_data[1:n+1]))
+    MAX_BITS = 20
+    MAX_VAL = 1 << MAX_BITS
+    sum_mask = [0] * MAX_VAL
+    for x in a:
+        sum_mask[x] += x
+    for i in range(MAX_BITS):
+        bit = 1 << i
+        for mask in range(MAX_VAL):
+            if mask & bit:
+                sum_mask[mask] += sum_mask[mask ^ bit]
+    q_idx = n + 1
+    num_queries = int(input_data[q_idx])
+    q_idx += 1
+    full_mask = MAX_VAL - 1
+    results = []
+    for _ in range(num_queries):
+        x = int(input_data[q_idx])
+        q_idx += 1
+        complement = full_mask ^ x
+        target_mask = complement & full_mask
+        results.append(str(sum_mask[target_mask]))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
