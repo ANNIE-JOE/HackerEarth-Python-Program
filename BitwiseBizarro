@@ -1,0 +1,29 @@
+import sys
+def count_set_bits(n):
+    """Returns the number of set bits (1s) in the binary representation of n."""
+    return bin(n).count('1')
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    it = iter(input_data)
+    t = int(next(it))
+    results = []
+    for _ in range(t):
+        n = int(next(it))
+        arr = [int(next(it)) for _ in range(n)]
+        total_odd_subarrays = 0
+        curr_ors = {}
+        for x in arr:
+            new_ors = {x: 1}
+            for val, count in curr_ors.items():
+                new_val = val | x
+                new_ors[new_val] = new_ors.get(new_val, 0) + count
+            for val, count in new_ors.items():
+                if count_set_bits(val) % 2 != 0:
+                    total_odd_subarrays += count
+            curr_ors = new_ors
+        results.append(str(total_odd_subarrays))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
