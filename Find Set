@@ -1,0 +1,22 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    unique_strings = list(set(input_data[1:n+1]))
+    unique_strings.sort(key=len, reverse=True)
+    maximal_count = 0
+    for i in range(len(unique_strings)):
+        is_covered = False
+        for j in range(len(unique_strings)):
+            if i == j:
+                continue
+            if unique_strings[i] in unique_strings[j]:
+                is_covered = True
+                break
+        if not is_covered:
+            maximal_count += 1
+    print(maximal_count)
+if __name__ == "__main__":
+    solve()
