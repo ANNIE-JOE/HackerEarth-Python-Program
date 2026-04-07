@@ -1,0 +1,43 @@
+import sys
+import random
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    n = int(input_data[0])
+    arr = list(map(int, input_data[1:]))
+    limit = 1000001
+    spf = list(range(limit))
+    for i in range(2, int(limit**0.5) + 1):
+        if spf[i] == i:
+            for j in range(i*i, limit, i):
+                if spf[j] == j: spf[j] = i
+    h1 = {}
+    h2 = {}
+    current_hash = 0
+    hash_counts = {0: 1}
+    ans = 0
+    prime_exp_mod3 = {}
+    for x in arr:
+        temp = x
+        while temp > 1:
+            p = spf[temp]
+            count = 0
+            while temp % p == 0:
+                count += 1
+                temp //= p
+            if p not in h1:
+                h1[p] = random.getrandbits(64)
+                h2[p] = random.getrandbits(64)
+                prime_exp_mod3[p] = 0
+            old_exp = prime_exp_mod3[p]
+            if old_exp == 1: current_hash ^= h1[p]
+            elif old_exp == 2: current_hash ^= h2[p]
+            new_exp = (old_exp + count) % 3
+            prime_exp_mod3[p] = new_exp
+            if new_exp == 1: current_hash ^= h1[p]
+            elif new_exp == 2: current_hash ^= h2[p]
+        ans += hash_counts.get(current_hash, 0)
+        hash_counts[current_hash] = hash_counts.get(current_hash, 0) + 1
+    print(ans)
+if __name__ == "__main__":
+    solve()
