@@ -1,0 +1,43 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return  
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1   
+    for _ in range(t):
+        n = int(input_data[ptr]); ptr += 1
+        s = input_data[ptr]; ptr += 1
+        f = [0] * n
+        f[n-1] = n - 1
+        for i in range(n-2, -1, -1):
+            if s[i] <= s[i+1]:
+                f[i] = f[i+1]
+            else:
+                f[i] = i
+        pref = [0] * (n + 1)
+        for i in range(n):
+            pref[i+1] = pref[i] + (f[i] - i + 1)          
+        q = int(input_data[ptr]); ptr += 1
+        for _ in range(q):
+            l = int(input_data[ptr]) - 1
+            r = int(input_data[ptr+1]) - 1
+            ptr += 2
+            low = l
+            high = r
+            p = r + 1
+            while low <= high:
+                mid = (low + high) // 2
+                if f[mid] >= r:
+                    p = mid
+                    high = mid - 1
+                else:
+                    low = mid + 1
+            ans = 0
+            if p > l:
+                ans += pref[p] - pref[l]
+            if p <= r:
+                count = (r - p + 1)
+                ans += (count * (count + 1)) // 2           
+            print(ans)
+if __name__ == "__main__":
+    solve()
