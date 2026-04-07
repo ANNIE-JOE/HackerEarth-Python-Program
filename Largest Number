@@ -1,0 +1,18 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    num_str = input_data[0]
+    k = int(input_data[1])
+    stack = []
+    for digit in num_str:
+        while k > 0 and stack and stack[-1] < digit:
+            stack.pop()
+            k -= 1
+        stack.append(digit)
+    if k > 0:
+        stack = stack[:-k]
+    print("".join(stack))
+if __name__ == "__main__":
+    solve()
