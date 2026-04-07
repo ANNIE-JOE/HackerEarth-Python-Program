@@ -1,0 +1,51 @@
+import sys
+sys.setrecursionlimit(200000)
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    adj = [[] for _ in range(n + 1)]
+    for i in range(1, 2 * (n - 1), 2):
+        u, v = int(input_data[i]), int(input_data[i+1])
+        adj[u].append(v)
+        adj[v].append(u)
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    for p in range(2, int(n**0.5) + 1):
+        if is_prime[p]:
+            for i in range(p * p, n + 1, p):
+                is_prime[i] = False
+    visited = [False] * (n + 1)
+    cluster_size = {} 
+    node_to_cluster = {} 
+    cluster_id_counter = 0
+    for i in range(1, n + 1):
+        if not is_prime[i] and not visited[i]:
+            cluster = []
+            stack = [i]
+            visited[i] = True
+            while stack:
+                u = stack.pop()
+                cluster.append(u)
+                for v in adj[u]:
+                    if not is_prime[v] and not visited[v]:
+                        visited[v] = True
+                        stack.append(v)
+            for node in cluster:
+                node_to_cluster[node] = cluster_id_counter
+            cluster_size[cluster_id_counter] = len(cluster)
+            cluster_id_counter += 1
+    ans = 0
+    for p in range(1, n + 1):
+        if is_prime[p]:
+            adj_sizes = []
+            for v in adj[p]:
+                if not is_prime[v]:
+                    adj_sizes.append(cluster_size[node_to_cluster[v]])
+            current_sum = sum(adj_sizes)
+            ans += current_sum
+            ans += (current_sum**2 - sum(x*x for x in adj_sizes)) // 2
+    print(ans)
+if __name__ == "__main__":
+    solve()
