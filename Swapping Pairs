@@ -1,0 +1,54 @@
+import sys
+def solve():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    ptr = 0
+    t = int(data[ptr])
+    ptr += 1
+    results = []
+    for _ in range(t):
+        n = int(data[ptr])
+        s = int(data[ptr+1])
+        ptr += 2
+        current_sum = 0
+        diffs = []
+        for _ in range(n):
+            a = int(data[ptr])
+            b = int(data[ptr+1])
+            ptr += 2
+            current_sum += a
+            diffs.append(b - a)
+        target = s - current_sum
+        if target == 0:
+            results.append("YES")
+            continue
+        possible_sums = 1 
+        offset = 0
+        for d in diffs:
+            if d > 0:
+                possible_sums |= (possible_sums << d)
+            elif d < 0:
+                possible_sums |= (possible_sums >> abs(d))
+        if target >= -100000 and target <= 100000:
+            if target >= 0:
+                if (possible_sums >> target) & 1:
+                    results.append("YES")
+                else:
+                    results.append("NO")
+            else:
+                reachable = 1 << 100000 
+                for d in diffs:
+                    if d >= 0:
+                        reachable |= (reachable << d)
+                    else:
+                        reachable |= (reachable >> abs(d))
+                if (reachable >> (target + 100000)) & 1:
+                    results.append("YES")
+                else:
+                    results.append("NO")
+        else:
+            results.append("NO")
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
