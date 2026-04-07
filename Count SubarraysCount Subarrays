@@ -1,0 +1,27 @@
+import sys
+def count_set_bits(n):
+    return bin(n).count('1') % 2
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        a = map(int, input_data[ptr : ptr + n])
+        ptr += n
+        count0 = 1 
+        count1 = 0
+        current_prefix_parity = 0
+        for x in a:
+            current_prefix_parity ^= count_set_bits(x)
+            if current_prefix_parity == 0:
+                count0 += 1
+            else:
+                count1 += 1
+        print(count0 * count1)
+if __name__ == "__main__":
+    solve()
