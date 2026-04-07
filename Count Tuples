@@ -1,0 +1,46 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr]); ptr += 1
+        a = [int(x) for x in input_data[ptr:ptr+n]]
+        ptr += n
+        sorted_a = sorted(list(set(a)))
+        rank = {val: i + 1 for i, val in enumerate(sorted_a)}
+        max_rank = len(sorted_a)
+        def update(bit, idx, val):
+            while idx <= max_rank:
+                bit[idx] += val
+                idx += idx & (-idx)
+        def query(bit, idx):
+            s = 0
+            while idx > 0:
+                s += bit[idx]
+                idx -= idx & (-idx)
+            return s
+        r_bit = [0] * (max_rank + 1)
+        r_freq = {}
+        for x in a:
+            update(r_bit, rank[x], 1)
+            r_freq[x] = r_freq.get(x, 0) + 1
+        l_bit = [0] * (max_rank + 1)
+        l_freq = {}
+        ans = 0
+        for x in a:
+            r_freq[x] -= 1
+            update(r_bit, rank[x], -1)
+            l_le = query(l_bit, rank[x])
+            l_ge = query(l_bit, max_rank) - query(l_bit, rank[x] - 1)
+            l_eq = l_freq.get(x, 0)
+            r_le = query(r_bit, rank[x])
+            r_ge = query(r_bit, max_rank) - query(r_bit, rank[x] - 1) 
+            r_eq = r_freq[x]
+            ans += (l_le * r_ge) + (l_ge * r_le) - (l_eq * r_eq)
+            update(l_bit, rank[x], 1)
+            l_freq[x] = l_freq.get(x, 0) + 1
+        print(ans)
+if __name__ == "__main__":
+    solve()
