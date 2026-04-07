@@ -1,0 +1,48 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    Q = int(input_data[0])
+    queries = []
+    coords = set()
+    ptr = 1
+    for _ in range(Q):
+        t = int(input_data[ptr])
+        v = int(input_data[ptr+1])
+        queries.append((t, v))
+        if t == 1:
+            coords.add(v)
+        ptr += 2
+    sorted_coords = sorted(list(coords))
+    rank_map = {val: i + 1 for i, val in enumerate(sorted_coords)}
+    bit = [0] * (len(sorted_coords) + 1)
+    def update(idx, val):
+        while idx < len(bit):
+            bit[idx] += val
+            idx += idx & (-idx)
+    def query_bit(idx):
+        s = 0
+        while idx > 0:
+            s += bit[idx]
+            idx -= idx & (-idx)
+        return s
+    for t, v in queries:
+        if t == 1:
+            update(rank_map[v], 1)
+        else:
+            low = v
+            high = v + Q 
+            while low <= high:
+                mid = (low + high) // 2
+                import bisect
+                idx = bisect.bisect_right(sorted_coords, mid)
+                deleted_count = query_bit(idx)
+                if mid - deleted_count >= v:
+                    ans = mid
+                    high = mid - 1
+                else:
+                    low = mid + 1
+            print(ans)
+if __name__ == "__main__":
+    solve()
