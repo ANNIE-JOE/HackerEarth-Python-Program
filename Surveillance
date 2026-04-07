@@ -1,0 +1,42 @@
+import sys
+sys.setrecursionlimit(200000)
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    if n <= 1:
+        print(0)
+        return
+    adj = [[] for _ in range(n + 1)]
+    idx = 1
+    for _ in range(n - 1):
+        u = int(input_data[idx])
+        v = int(input_data[idx+1])
+        adj[u].append(v)
+        adj[v].append(u)
+        idx += 2
+    cameras = 0
+    def dfs(u, p):
+        nonlocal cameras
+        is_covered = False
+        has_uncovered_child = False
+        for v in adj[u]:
+            if v == p:
+                continue
+            child_state = dfs(v, u)
+            if child_state == 0:
+                has_uncovered_child = True
+            if child_state == 1:
+                is_covered = True
+        if has_uncovered_child:
+            cameras += 1
+            return 1 
+        if is_covered:
+            return 2 
+        return 0   
+    if dfs(1, -1) == 0:
+        cameras += 1
+    print(cameras)
+if __name__ == "__main__":
+    solve()
