@@ -1,0 +1,35 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    m = int(input_data[1])
+    k = int(input_data[2])
+    broken = {}
+    idx = 3
+    for _ in range(k):
+        r = int(input_data[idx])
+        c = int(input_data[idx+1])
+        if r not in broken:
+            broken[r] = set()
+        broken[r].add(c)
+        idx += 2
+    total_max = 0
+    total_min = 0
+    for r in range(n):
+        row_broken = sorted(list(broken.get(r, set())))
+        last_c = -1
+        segments = []
+        for bc in row_broken:
+            if bc > last_c + 1:
+                segments.append(bc - last_c - 1)
+            last_c = bc
+        if m > last_c + 1:
+            segments.append(m - last_c - 1)
+        for L in segments:
+            total_max += (L + 1) // 2
+            total_min += (L + 2) // 3
+    print(f"{total_max} {total_min}")
+if __name__ == "__main__":
+    solve()
