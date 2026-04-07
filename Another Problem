@@ -1,0 +1,35 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    chunks = input_data[1:]
+    results = set()
+    used = [False] * n
+    def find_overlap(s1, s2):
+        """Returns the length of the maximum suffix of s1 that is a prefix of s2."""
+        max_overlap = min(len(s1), len(s2))
+        for length in range(max_overlap - 1, 0, -1):
+            if s1.endswith(s2[:length]):
+                return length
+        return 0
+    def backtrack(current_str, last_chunk_idx, count):
+        if count == n:
+            results.add(current_str)
+            return
+        for i in range(n):
+            if not used[i]:
+                overlap_len = find_overlap(chunks[last_chunk_idx], chunks[i])
+                if overlap_len > 0:
+                    used[i] = True
+                    backtrack(current_str + chunks[i][overlap_len:], i, count + 1)
+                    used[i] = False
+    for i in range(n):
+        used[i] = True
+        backtrack(chunks[i], i, 1)
+        used[i] = False
+    for res in sorted(list(results)):
+        print(res)
+if __name__ == "__main__":
+    solve()
