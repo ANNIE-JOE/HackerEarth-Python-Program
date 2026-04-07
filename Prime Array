@@ -1,0 +1,32 @@
+import sys
+def is_prime(n):
+    if n < 2: return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0: return False
+    return True
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr]); ptr += 1
+        a = [int(x) for x in input_data[ptr : ptr + n]]
+        ptr += n
+        ones = 0
+        primes = {}  
+        for x in a:
+            if x == 1:
+                ones += 1
+            elif is_prime(x):
+                primes[x] = primes.get(x, 0) + 1
+        if ones < 2:
+            print(0)
+            continue
+        ways_to_pick_ones = (ones * (ones - 1)) // 2
+        total_triplets = 0
+        for p_count in primes.values():
+            total_triplets += ways_to_pick_ones * p_count
+        print(total_triplets)
+if __name__ == "__main__":
+    solve()
