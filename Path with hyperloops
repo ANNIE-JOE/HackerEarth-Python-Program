@@ -1,0 +1,35 @@
+import heapq
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    n, m, k, start, end = map(int, input_data[:5])
+    adj = [[] for _ in range(n + 1)]
+    ptr = 5
+    for _ in range(m):
+        u, v = int(input_data[ptr]), int(input_data[ptr+1])
+        adj[u].append((v, 1))
+        adj[v].append((u, 1))
+        ptr += 2
+    for _ in range(k):
+        u, v = int(input_data[ptr]), int(input_data[ptr+1])
+        adj[u].append((v, 2))
+        adj[v].append((u, 2))
+        ptr += 2
+    dist = [float('inf')] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)] 
+    while pq:
+        curr_dist, u = heapq.heappop(pq)  
+        if curr_dist > dist[u]: continue
+        if u == end: break
+        for v, weight in adj[u]:
+            if dist[u] + weight < dist[v]:
+                dist[v] = dist[u] + weight
+                heapq.heappush(pq, (dist[v], v))
+    if dist[end] == float('inf'):
+        print("-1")
+    else:
+        print(dist[end])
+if __name__ == "__main__":
+    solve()
