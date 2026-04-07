@@ -1,0 +1,31 @@
+import math
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    a = [int(x) for x in input_data[1:]]
+    gcd_matrix = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            gcd_val = math.gcd(a[i], a[j])
+            gcd_matrix[i][j] = gcd_val
+            gcd_matrix[j][i] = gcd_val
+    dp = [0] * (1 << n)
+    for mask in range(1 << n):
+        bits_count = bin(mask).count('1')
+        if bits_count % 2 != 0:
+            continue
+        current_round = (bits_count // 2) + 1
+        for i in range(n):
+            if not (mask & (1 << i)):
+                for j in range(i + 1, n):
+                    if not (mask & (1 << j)):
+                        new_mask = mask | (1 << i) | (1 << j)
+                        score = dp[mask] + (gcd_matrix[i][j] * current_round)
+                        if score > dp[new_mask]:
+                            dp[new_mask] = score
+    print(dp[(1 << n) - 1])
+if __name__ == "__main__":
+    solve()
