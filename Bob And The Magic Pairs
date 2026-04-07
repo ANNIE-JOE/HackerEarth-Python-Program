@@ -1,0 +1,50 @@
+import sys
+class TrieNode:
+    def __init__(self):
+        self.children = [None, None]
+        self.count = 0
+def insert(root, num):
+    curr = root
+    for i in range(30, -1, -1):
+        bit = (num >> i) & 1
+        if not curr.children[bit]:
+            curr.children[bit] = TrieNode()
+        curr = curr.children[bit]
+        curr.count += 1
+def count_less_equal(root, num, k):
+    if k < 0: return 0
+    curr = root
+    total = 0
+    for i in range(30, -1, -1):
+        if not curr: break
+        bit_num = (num >> i) & 1
+        bit_k = (k >> i) & 1
+        if bit_k == 1:
+            if curr.children[bit_num]:
+                total += curr.children[bit_num].count
+            curr = curr.children[1 - bit_num]
+        else:
+            curr = curr.children[bit_num]
+    if curr:
+        total += curr.count
+    return total
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    t = int(input_data[0])
+    ptr = 1
+    for _ in range(t):
+        n = int(input_data[ptr])
+        l = int(input_data[ptr+1])
+        r = int(input_data[ptr+2])
+        ptr += 3
+        a = [int(x) for x in input_data[ptr:ptr+n]]
+        ptr += n
+        root = TrieNode()
+        ans = 0
+        for x in a:
+            ans += count_less_equal(root, x, r) - count_less_equal(root, x, l - 1)
+            insert(root, x)
+        print(ans)
+if __name__ == "__main__":
+    solve()
