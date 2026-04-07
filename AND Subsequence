@@ -1,0 +1,28 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr]); ptr += 1
+        x = int(input_data[ptr]); ptr += 1
+        a = [int(v) for v in input_data[ptr:ptr+n]]
+        ptr += n
+        candidates = [x]
+        for i in range(31):
+            if not (x & (1 << i)):
+                cand = (x >> i) << i
+                cand |= (1 << i)
+                candidates.append(cand)
+        max_len = -1
+        for v in candidates:
+            count = 0
+            for item in a:
+                if (item & v) == v:
+                    count += 1
+            if count > 0:
+                max_len = max(max_len, count)
+        print(max_len)
+if __name__ == "__main__":
+    solve()
