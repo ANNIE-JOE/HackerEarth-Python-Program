@@ -1,0 +1,29 @@
+import sys
+from collections import Counter
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    it = iter(input_data)
+    t = int(next(it))
+    results = []
+    for _ in range(t):
+        n = int(next(it))  
+        m = int(next(it))  
+        a_str = next(it)
+        b_str = next(it)
+        count_a = Counter(a_str)
+        count_b = Counter(b_str)
+        max_strings = float('inf')
+        for char, required in count_b.items():
+            if char in count_a:
+                max_strings = min(max_strings, count_a[char] // required)
+            else:
+                max_strings = 0
+                break
+        if max_strings == float('inf'):
+            max_strings = 0
+        results.append(str(max_strings))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
