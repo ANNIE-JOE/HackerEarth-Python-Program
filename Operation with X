@@ -1,0 +1,21 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    x = int(input_data[1])
+    a = sorted([int(val) for val in input_data[2:]])
+    if n == 1:
+        print(0)
+        return
+    ans = a[n-1] - a[0]
+    left = a[0] + x
+    right = a[n-1] - x
+    for i in range(n - 1):
+        curr_max = max(a[i] + x, right)
+        curr_min = min(left, a[i+1] - x)
+        ans = min(ans, abs(curr_max - curr_min))
+    print(ans)
+if __name__ == "__main__":
+    solve()
