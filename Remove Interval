@@ -1,0 +1,30 @@
+import sys
+from bisect import bisect_right, bisect_left
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    intervals = []
+    starts = []
+    ends = []
+    ptr = 1
+    for _ in range(n):
+        l = int(input_data[ptr])
+        r = int(input_data[ptr+1])
+        intervals.append((l, r))
+        starts.append(l)
+        ends.append(r)
+        ptr += 2 
+    starts.sort()
+    ends.sort() 
+    min_cost = float('inf')
+    for l, r in intervals:
+        starts_before_r = bisect_right(starts, r)
+        ends_before_l = bisect_left(ends, l) 
+        cost = starts_before_r - ends_before_l - 1
+        if cost < min_cost:
+            min_cost = cost     
+    print(min_cost)
+if __name__ == "__main__":
+    solve()
