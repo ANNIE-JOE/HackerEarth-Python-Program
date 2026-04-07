@@ -1,0 +1,30 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t_cases = int(input_data[ptr]); ptr += 1
+    for _ in range(t_cases):
+        n = int(input_data[ptr])
+        x = int(input_data[ptr+1])
+        ptr += 2
+        s = input_data[ptr]; ptr += 1
+        t = input_data[ptr]; ptr += 1
+        diffs = [i for i in range(n) if s[i] != t[i]]
+        d = len(diffs)   
+        if d % 2 != 0:
+            print("-1")
+            continue
+        if d == 0:
+            print("0")
+            continue
+        dp = [0] * (d + 1)
+        dp[1] = float('inf') 
+        for i in range(2, d + 1):
+            cost_op1 = dp[i-2] + x
+            dist = diffs[i-1] - diffs[i-2]
+            cost_op2 = dp[i-2] + dist 
+            dp[i] = min(cost_op1, cost_op2)
+        print(dp[d])
+if __name__ == "__main__":
+    solve()
