@@ -1,0 +1,33 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return 
+    n = int(input_data[0])
+    a = [int(x) for x in input_data[1:n+1]]
+    l_query = int(input_data[n+1]) - 1
+    r_query = int(input_data[n+2]) - 1 
+    full_sum = 0
+    full_xor = 0
+    for i in range(l_query, r_query + 1):
+        full_sum += a[i]
+        full_xor ^= a[i]
+    target_cost = full_sum - full_xor
+    best_x, best_y = l_query, r_query
+    min_len = r_query - l_query + 1
+    curr_sum = 0
+    curr_xor = 0
+    x = l_query
+    for y in range(l_query, r_query + 1):
+        curr_sum += a[y]
+        curr_xor ^= a[y]
+        while x <= y and (curr_sum - curr_xor) == target_cost:
+            if (y - x + 1) < min_len:
+                min_len = y - x + 1
+                best_x, best_y = x, y
+            curr_sum -= a[x]
+            curr_xor ^= a[x]
+            x += 1
+    print(f"{best_x + 1} {best_y + 1}")
+if __name__ == "__main__":
+    solve()
