@@ -1,0 +1,46 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        a = [int(x) for x in input_data[ptr : ptr + n]]
+        ptr += n
+        a.sort(reverse=True)
+        alex_sum = 0
+        bob_sum = 0
+        alex_seen = set()
+        bob_seen = set()
+        alex_ptr = 0
+        bob_ptr = 0
+        taken = [False] * n
+        for turn in range(n):
+            if turn % 2 == 0: 
+                while alex_ptr < n:
+                    val = a[alex_ptr]
+                    if not taken[alex_ptr] and val not in alex_seen:
+                        alex_sum += val
+                        alex_seen.add(val)
+                        taken[alex_ptr] = True
+                        break
+                    alex_ptr += 1
+            else: 
+                while bob_ptr < n:
+                    val = a[bob_ptr]
+                    if not taken[bob_ptr] and val not in bob_seen:
+                        bob_sum += val
+                        bob_seen.add(val)
+                        taken[bob_ptr] = True
+                        break
+                    bob_ptr += 1                   
+        if alex_sum > bob_sum:
+            print("Alex")
+        else:
+            print("Bob")
+if __name__ == "__main__":
+    solve()
