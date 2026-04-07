@@ -1,21 +1,20 @@
 import sys
 from collections import deque
 def solve():
-    input_data = sys.stdin.read().split()
-    if not input_data: return
+    raw_data = sys.stdin.read().split()
+    if not raw_data: return
     ptr = 0
-    t = int(input_data[ptr]); ptr += 1
-    for _ in range(t):
-        n = int(input_data[ptr]); m = int(input_data[ptr+1])
-        x = int(input_data[ptr+2]); y = int(input_data[ptr+3])
+    t_cases = int(raw_data[ptr]); ptr += 1
+    output = []
+    for _ in range(t_cases):
+        n, m = int(raw_data[ptr]), int(raw_data[ptr+1])
+        x, y = int(raw_data[ptr+2]), int(raw_data[ptr+3])
         ptr += 4
         adj = [[] for _ in range(n + 1)]
-        existing_edges = set()
         for _ in range(m):
-            u, v = int(input_data[ptr]), int(input_data[ptr+1])
+            u, v = int(raw_data[ptr]), int(raw_data[ptr+1])
             adj[u].append(v)
             adj[v].append(u)
-            existing_edges.add(tuple(sorted((u, v))))
             ptr += 2
         def bfs(start_node):
             dists = [-1] * (n + 1)
@@ -28,15 +27,25 @@ def solve():
                         dists[v] = dists[u] + 1
                         q.append(v)
             return dists
-        distX = bfs(x)
-        distY = bfs(y)
-        D = distX[y] 
-        count = 0
+        dx = bfs(x)
+        dy = bfs(y)
+        D = dx[y]
+        freqX = [0] * (n + 1)
         for i in range(1, n + 1):
-            for j in range(i + 1, n + 1):
-                if tuple(sorted((i, j))) not in existing_edges:
-                    if distX[i] + 1 + distY[j] >= D and distX[j] + 1 + distY[i] >= D:
-                        count += 1
-        print(count)
+            if dx[i] != -1:
+                freqX[dx[i]] += 1
+        prefX = [0] * (n + 1)
+        prefX[0] = freqX[0]
+        for i in range(1, n + 1):
+            prefX[i] = prefX[i-1] + freqX[i]
+        shortcuts = 0
+        for v in range(1, n + 1):
+            if dy[v] == -1: continue
+            max_dx = D - dy[v] - 2
+            if max_dx >= 0:
+                shortcuts += prefX[min(max_dx, n)]
+        ans = (n * (n - 1)) // 2 - shortcuts - m
+        output.append(str(max(0, ans)))
+    sys.stdout.write("\n".join(output) + "\n")
 if __name__ == "__main__":
     solve()
