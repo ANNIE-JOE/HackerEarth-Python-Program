@@ -1,0 +1,64 @@
+import sys
+input = sys.stdin.read().split()
+def solve():
+    if not input:
+        return
+    n = int(input[0])
+    adj = [[] for _ in range(n + 1)]
+    idx = 1
+    for _ in range(n - 1):
+        u, v = int(input[idx]), int(input[idx+1])
+        adj[u].append(v)
+        adj[v].append(u)
+        idx += 2    
+    values = [0] + [int(x) for x in input[idx:idx+n]]
+    idx += n
+    entry = [0] * (n + 1)
+    exit = [0] * (n + 1)
+    timer = 0
+    flat_values = [0] * (n + 1)
+    stack = [(1, 0)]
+    while stack:
+        u, p = stack.pop()
+        if u > 0:
+            timer += 1
+            entry[u] = timer
+            flat_values[timer] = values[u]
+            stack.append((-u, p))
+            for v in adj[u]:
+                if v != p:
+                    stack.append((v, u))
+        else:
+            exit[-u] = timer
+    num_queries = int(input[idx])
+    idx += 1   
+    current_values = list(values)   
+    for _ in range(num_queries):
+        query_type = int(input[idx])
+        if query_type == 1:
+            u = int(input[idx+1])
+            idx += 2
+            subtree_sum = 0
+            s = [u]
+            visited_subtree = {u}
+            nodes = []
+            todo = [u]
+            while todo:
+                curr = todo.pop()
+                nodes.append(curr)
+                for v in adj[curr]:
+                    if entry[v] > entry[curr]:
+                        todo.append(v)
+            print(sum(current_values[node] for node in nodes))      
+        else:
+            u, x = int(input[idx+1]), int(input[idx+2])
+            idx += 3
+            todo = [u]
+            while todo:
+                curr = todo.pop()
+                current_values[curr] ^= x
+                for v in adj[curr]:
+                    if entry[v] > entry[curr]:
+                        todo.append(v)
+if __name__ == "__main__":
+    solve()
