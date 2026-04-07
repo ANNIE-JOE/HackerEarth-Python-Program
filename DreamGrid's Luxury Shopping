@@ -1,0 +1,16 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    m = int(input_data[1])
+    prices = [int(x) for x in input_data[2:2+n]]
+    sum_m = sum(prices[:m])
+    if m == n:
+        print(sum_m) 
+        return
+    min_remaining = min(prices[m:])
+    print(sum_m + min_remaining - 1)
+if __name__ == "__main__":
+    solve()
