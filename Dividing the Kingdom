@@ -1,0 +1,28 @@
+import sys
+sys.setrecursionlimit(200000)
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    adj = [[] for _ in range(n + 1)]
+    for i in range(1, len(input_data), 2):
+        u, v = int(input_data[i]), int(input_data[i+1])
+        adj[u].append(v)
+        adj[v].append(u)
+    matching_count = 0
+    used = [False] * (n + 1)
+    def dfs(u, p):
+        nonlocal matching_count
+        for v in adj[u]:
+            if v == p:
+                continue
+            dfs(v, u)
+            if not used[v] and not used[u]:
+                used[v] = True
+                used[u] = True
+                matching_count += 1
+    dfs(1, -1)
+    print(matching_count)
+if __name__ == "__main__":
+    solve()
