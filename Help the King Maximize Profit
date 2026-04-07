@@ -1,0 +1,44 @@
+import sys
+sys.setrecursionlimit(5000)
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n, m, intro_count, extro_count = map(int, input_data)
+    memo = {}
+    def get_profit(val, up_val, left_val, col):
+        if val == 0: return 0
+        profit = 360 if val == 1 else 120
+        if up_val != 0:
+            profit += -60 if val == 1 else 60
+            profit += -60 if up_val == 1 else 60
+        if col > 0 and left_val != 0:
+            profit += -60 if val == 1 else 60
+            profit += -60 if left_val == 1 else 60
+        return profit
+    def dp(idx, i_rem, e_rem, mask):
+        state = (idx, i_rem, e_rem, mask)
+        if state in memo:
+            return memo[state]
+        if idx == n * m:
+            return 0
+        row = idx // m
+        col = idx % m
+        up_val = mask[col]
+        left_val = mask[col-1] if col > 0 else 0
+        new_mask = list(mask)
+        new_mask[col] = 0
+        res = dp(idx + 1, i_rem, e_rem, tuple(new_mask))
+        if i_rem > 0:
+            p = get_profit(1, up_val, left_val, col)
+            new_mask[col] = 1
+            res = max(res, p + dp(idx + 1, i_rem - 1, e_rem, tuple(new_mask)))
+        if e_rem > 0:
+            p = get_profit(2, up_val, left_val, col)
+            new_mask[col] = 2
+            res = max(res, p + dp(idx + 1, i_rem, e_rem - 1, tuple(new_mask)))
+        memo[state] = res
+        return res
+    print(dp(0, intro_count, extro_count, (0,) * m))
+if __name__ == "__main__":
+    solve()
