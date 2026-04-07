@@ -1,0 +1,35 @@
+import sys
+import bisect
+from collections import defaultdict
+def solve():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    s = data[0]
+    q = int(data[1])
+    char_indices = defaultdict(list)
+    for i, char in enumerate(s):
+        char_indices[char].append(i)
+    results = []
+    ptr = 2
+    cache = {} 
+    for _ in range(q):
+        c1 = data[ptr]
+        c2 = data[ptr+1]
+        ptr += 2
+        query = (c1, c2)
+        if query in cache:
+            results.append(str(cache[query]))
+            continue
+        idx_list1 = char_indices.get(c1, [])
+        idx_list2 = char_indices.get(c2, [])
+        count = 0
+        n2 = len(idx_list2)
+        for i in idx_list1:
+            pos = bisect.bisect_left(idx_list2, i)
+            count += (n2 - pos)
+        cache[query] = count
+        results.append(str(count))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
