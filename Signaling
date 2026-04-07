@@ -1,0 +1,24 @@
+import sys
+def solve():
+    line = sys.stdin.readline()
+    if not line:
+        return
+    t = int(line.strip())
+   
+    for _ in range(t):
+        n = int(sys.stdin.readline().strip())
+        s = sys.stdin.readline().strip()   
+        max_high = 0
+        current_high = 0    
+        for char in s:
+            if char == '1':
+                current_high += 1
+            else:
+                if current_high > max_high:
+                    max_high = current_high
+                current_high = 0
+        if current_high > max_high:
+            max_high = current_high        
+        print(max_high)
+if __name__ == "__main__":
+    solve()
