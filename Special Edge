@@ -1,0 +1,63 @@
+import sys
+sys.setrecursionlimit(200000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    
+    ptr = 0
+    n = int(input_data[ptr]); ptr += 1
+    m = int(input_data[ptr]); ptr += 1
+    a = [0] + [int(input_data[ptr + i]) for i in range(n)]
+    ptr += n
+    total_a_sum = sum(a)
+    
+    adj = [[] for _ in range(n + 1)]
+    edges = []
+    for _ in range(m):
+        u, v = int(input_data[ptr]), int(input_data[ptr+1])
+        ptr += 2
+        adj[u].append(v)
+        adj[v].append(u)
+        edges.append(tuple(sorted((u, v))))
+
+    discovery_time = [-1] * (n + 1)
+    low_link = [-1] * (n + 1)
+    subtree_sum = [0] * (n + 1)
+    timer = 0
+    bridges = []
+
+    def dfs(u, p=-1):
+        nonlocal timer
+        discovery_time[u] = low_link[u] = timer
+        timer += 1
+        subtree_sum[u] = a[u]
+        
+        for v in adj[u]:
+            if v == p: continue
+            if discovery_time[v] == -1:
+                dfs(v, u)
+                subtree_sum[u] += subtree_sum[v]
+                low_link[u] = min(low_link[u], low_link[v])
+                if low_link[v] > discovery_time[u]:
+                    bridges.append((u, v, subtree_sum[v]))
+            else:
+                low_link[u] = min(low_link[u], discovery_time[v])
+
+    dfs(1)
+    if not bridges:
+        print("-1 -1")
+        return
+    max_strength = -1
+    best_edge = (float('inf'), float('inf'))
+    for u, v, s_v in bridges:
+        strength = s_v * (total_a_sum - s_v)
+        edge = tuple(sorted((u, v)))
+        if strength > max_strength:
+            max_strength = strength
+            best_edge = edge
+        elif strength == max_strength:
+            if edge < best_edge:
+                best_edge = edge
+    print(f"{best_edge[0]} {best_edge[1]}")
+solve()
