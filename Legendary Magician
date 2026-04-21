@@ -1,0 +1,27 @@
+import sys
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1      
+        L = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        R = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        students = sorted(zip(L, R), key=lambda x: x[1])     
+        shows = 0
+        last_show_time = -1  
+        for l_i, r_i in students:
+            if l_i > last_show_time:
+                shows += 1
+                last_show_time = r_i         
+        results.append(str(shows))
+    sys.stdout.write("\n".join(results) + "\n")
+if __name__ == "__main__":
+    solve()
