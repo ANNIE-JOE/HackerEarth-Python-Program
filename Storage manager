@@ -1,0 +1,65 @@
+import sys
+from bisect import bisect_left, insort
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    N = int(input_data[ptr])
+    ptr += 1
+    units = []
+    for _ in range(N):
+        uid = int(input_data[ptr])
+        size = int(input_data[ptr+1])
+        units.append((uid, size))
+        ptr += 2
+        
+    K = int(input_data[ptr])
+    ptr += 1
+    reqs = []
+    for i in range(K):
+        pref = int(input_data[ptr])
+        msize = int(input_data[ptr+1])
+        reqs.append((pref, msize, i))
+        ptr += 2
+    units.sort(key=lambda x: x[1], reverse=True)
+    reqs.sort(key=lambda x: x[1], reverse=True)
+    
+    ans = [-1] * K
+    active_ids = []
+    u_idx = 0
+    
+    for pref, msize, original_idx in reqs:
+        while u_idx < N and units[u_idx][1] >= msize:
+            insort(active_ids, units[u_idx][0])
+            u_idx += 1
+            
+        if not active_ids:
+            ans[original_idx] = -1
+            continue
+        idx = bisect_left(active_ids, pref)
+        
+        best_uid = -1
+        min_dist = float('inf')
+        candidates = []
+        if idx < len(active_ids):
+            candidates.append(active_ids[idx])
+        if idx > 0:
+            candidates.append(active_ids[idx-1])
+            
+        for cand in candidates:
+            dist = abs(cand - pref)
+            if dist < min_dist:
+                min_dist = dist
+                best_uid = cand
+            elif dist == min_dist:
+                if cand < best_uid:
+                    best_uid = cand
+        
+        ans[original_idx] = best_uid
+    print(*(ans))
+
+if __name__ == "__main__":
+    solve()
