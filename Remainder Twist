@@ -1,0 +1,48 @@
+import sys
+
+def count_pairs(n, y):
+    if y == 0:
+        return n * n
+    count = 0
+    for b in range(y + 1, n + 1):
+        num_full_cycles = n // b
+        remainder_in_cycle = b - y
+        count += num_full_cycles * remainder_in_cycle
+        last_part = n % b
+        if last_part >= y:
+            count += (last_part - y + 1)
+            
+    return count
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    t = int(input_data[0])
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(input_data[idx])
+        r = int(input_data[idx + 1])
+        idx += 2
+        
+        low = 0
+        high = n - 1
+        ans = -1
+        
+        while low <= high:
+            mid = (low + high) // 2
+            if count_pairs(n, mid) >= r:
+                ans = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+        
+        results.append(str(ans))
+        
+    sys.stdout.write("\n".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
