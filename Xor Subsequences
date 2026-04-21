@@ -1,0 +1,27 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    a = list(map(int, input_data[1:]))
+    basis = []
+    results = []
+    rank = 0
+    for i, x in enumerate(a):
+        temp = x
+        for b in basis:
+            temp = min(temp, temp ^ b)
+        if temp > 0:
+            basis.append(temp)
+            basis.sort(reverse=True)
+            rank += 1
+        if (i + 1) > rank:
+            results.append(str(1 << rank))
+        else:
+            results.append(str((1 << rank) - 1))
+    sys.stdout.write(" ".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
