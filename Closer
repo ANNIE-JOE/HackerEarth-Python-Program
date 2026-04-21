@@ -1,0 +1,41 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    k = int(input_data[1])
+    a = list(map(int, input_data[2:]))
+    a.sort()
+    low = min(a)
+    high = max(a)
+    ans = float('inf')
+    def get_ops(L):
+        increase = 0
+        decrease = 0
+        for x in a:
+            if x < L:
+                increase += (L - x)
+            elif x > L + k:
+                decrease += (x - (L + k))
+        return max(increase, decrease)
+    l_ptr = min(a)
+    r_ptr = max(a)
+    
+    while l_ptr <= r_ptr:
+        mid1 = l_ptr + (r_ptr - l_ptr) // 3
+        mid2 = r_ptr - (r_ptr - l_ptr) // 3
+        
+        cost1 = get_ops(mid1)
+        cost2 = get_ops(mid2)
+        
+        ans = min(ans, cost1, cost2)        
+        if cost1 < cost2:
+            r_ptr = mid2 - 1
+        else:
+            l_ptr = mid1 + 1           
+    print(ans)
+if __name__ == "__main__":
+    solve()
