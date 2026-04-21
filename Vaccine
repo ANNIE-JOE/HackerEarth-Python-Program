@@ -1,0 +1,45 @@
+import heapq
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    n = int(input_data[ptr]); ptr += 1
+    m = int(input_data[ptr]); ptr += 1
+    
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        u = int(input_data[ptr]); ptr += 1
+        v = int(input_data[ptr]); ptr += 1
+        weight = max(u, v)
+        adj[u].append((v, weight))
+        adj[v].append((u, weight))
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    for p in range(2, int(n**0.5) + 1):
+        if is_prime[p]:
+            for i in range(p * p, n + 1, p):
+                is_prime[i] = False
+    dist = [-1] * (n + 1)
+    pq = [] 
+    for i in range(1, n + 1):
+        if is_prime[i]:
+            dist[i] = 0
+            heapq.heappush(pq, (0, i))
+    while pq:
+        d, u = heapq.heappop(pq)
+        
+        if d > dist[u]:
+            continue
+            
+        for v, weight in adj[u]:
+            if dist[v] == -1 or dist[v] > d + weight:
+                dist[v] = d + weight
+                heapq.heappush(pq, (dist[v], v))
+    print(*(dist[1:]))
+
+if __name__ == "__main__":
+    solve()
