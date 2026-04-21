@@ -1,0 +1,20 @@
+def solve():
+    import sys
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n_str = input_data[0]
+    k = int(input_data[1])   
+    stack = []
+    for digit in n_str:
+        while k > 0 and stack and stack[-1] < digit:
+            stack.pop()
+            k -= 1
+        stack.append(digit)
+    while k > 0:
+        stack.pop()
+        k -= 1
+    result = "".join(stack).lstrip('0')
+    print(result if result else "0")
+if __name__ == "__main__":
+    solve()
