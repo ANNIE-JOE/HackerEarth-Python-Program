@@ -1,0 +1,47 @@
+import sys
+sys.setrecursionlimit(200000)
+
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n + 1))
+        self.sum_nodes = list(range(n + 1))
+    
+    def find(self, i):
+        if self.parent[i] == i:
+            return i
+        self.parent[i] = self.find(self.parent[i])
+        return self.parent[i]
+    
+    def union(self, i, j, weight, MOD):
+        root_i = self.find(i)
+        root_j = self.find(j)
+        if root_i != root_j:
+            contribution = (weight * self.sum_nodes[root_i] * self.sum_nodes[root_j]) % MOD
+            self.parent[root_i] = root_j
+            self.sum_nodes[root_j] = (self.sum_nodes[root_j] + self.sum_nodes[root_i]) % MOD
+            return contribution
+        return 0
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    n = int(input_data[0])
+    MOD = 10**9 + 7
+    
+    edges = []
+    ptr = 1
+    for _ in range(n - 1):
+        u = int(input_data[ptr]); ptr += 1
+        v = int(input_data[ptr]); ptr += 1
+        w = int(input_data[ptr]); ptr += 1
+        edges.append((w, u, v))
+    edges.sort()
+    
+    dsu = DSU(n)
+    total_sum = 0
+    for w, u, v in edges:
+        total_sum = (total_sum + dsu.union(u, v, w, MOD)) % MOD
+        
+    print(total_sum)
+
+solve()
