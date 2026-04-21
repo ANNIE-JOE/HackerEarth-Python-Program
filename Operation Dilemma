@@ -1,0 +1,44 @@
+import sys
+import heapq
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    ptr = 0
+    t = int(input_data[ptr]); ptr += 1
+    
+    for _ in range(t):
+        n = int(input_data[ptr]); ptr += 1
+        k = int(input_data[ptr]); ptr += 1
+        m = int(input_data[ptr]); ptr += 1
+        
+        A = [int(x) for x in input_data[ptr : ptr + n]]; ptr += n
+        B = [int(x) for x in input_data[ptr : ptr + n]]; ptr += n
+        base = [A[i] - B[i] for i in range(n)]
+        gain = [2 * B[i] for i in range(n)]
+        
+        current_base_sum = sum(base[:k])
+        from bisect import insort, bisect_left
+        
+        window_gains = sorted([gain[i] for i in range(k)])
+        
+        def get_top_m_sum(sorted_list, m):
+            idx = bisect_left(sorted_list, 1)
+            pos_gains = sorted_list[idx:]
+            return sum(pos_gains[-m:]) if pos_gains else 0
+
+        max_total = current_base_sum + get_top_m_sum(window_gains, m)
+        
+        for i in range(k, n):
+            current_base_sum += base[i] - base[i-k]
+            old_val = gain[i-k]
+            idx_to_del = bisect_left(window_gains, old_val)
+            window_gains.pop(idx_to_del)
+            insort(window_gains, gain[i])
+            current_total = current_base_sum + get_top_m_sum(window_gains, m)
+            if current_total > max_total:
+                max_total = current_total
+                
+        print(max_total)
+
+solve()
