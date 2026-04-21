@@ -1,0 +1,62 @@
+import sys
+sys.setrecursionlimit(200000)
+
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n + 1))
+    
+    def find(self, i):
+        if self.parent[i] == i:
+            return i
+        self.parent[i] = self.find(self.parent[i])
+        return self.parent[i]
+    
+    def union(self, i, j):
+        root_i = self.find(i)
+        root_j = self.find(j)
+        if root_i != root_j:
+            self.parent[root_i] = root_j
+            return True
+        return False
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    n = int(input_data[ptr]); ptr += 1
+    m = int(input_data[ptr]); ptr += 1
+    
+    start_node = int(input_data[ptr]); ptr += 1
+    end_node = int(input_data[ptr]); ptr += 1
+    
+    edges = []
+    for _ in range(m):
+        u = int(input_data[ptr]); ptr += 1
+        v = int(input_data[ptr]); ptr += 1
+        edges.append((u, v))
+        
+    node_values = []
+    for _ in range(n):
+        node_values.append(int(input_data[ptr])); ptr += 1
+    weighted_edges = []
+    for u, v in edges:
+        val_u = node_values[u-1]
+        val_v = node_values[v-1]
+        weight = abs(val_u - val_v)
+        weighted_edges.append((weight, u, v))
+    weighted_edges.sort()
+    dsu = DSU(n)
+    if start_node == end_node:
+        print(0)
+        return
+
+    for weight, u, v in weighted_edges:
+        dsu.union(u, v)
+        if dsu.find(start_node) == dsu.find(end_node):
+            print(weight)
+            return
+
+if __name__ == "__main__":
+    solve()
