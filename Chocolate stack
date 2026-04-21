@@ -1,0 +1,21 @@
+def solve():
+    import sys
+    line1 = sys.stdin.readline()
+    if not line1:
+        return
+    n = int(line1.strip())
+    line2 = sys.stdin.readline()
+    if not line2:
+        return
+    c = list(map(int, line2.split()))
+    stack = []
+    sold_chocolates = []   
+    for x in c:
+        if x > 0:
+            stack.append(x)
+        else:
+            if stack:
+                sold_chocolates.append(stack.pop())
+    print(*(sold_chocolates))
+if __name__ == "__main__":
+    solve()
