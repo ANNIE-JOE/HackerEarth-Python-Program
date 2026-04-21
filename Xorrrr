@@ -1,0 +1,44 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    if (n - 1) % 2 == 0:
+        print(0)
+        return
+    adj = [[] for _ in range(n + 1)]
+    ptr = 1
+    for _ in range(n - 1):
+        u = int(input_data[ptr])
+        v = int(input_data[ptr + 1])
+        ptr += 2
+        weight = u + v
+        adj[u].append((v, weight))
+        adj[v].append((u, weight))
+        
+    g = [0] * (n + 1)
+    visited = [False] * (n + 1)
+    queue = [1]
+    visited[1] = True
+    g[1] = 0
+    
+    total_xor_sum = 0
+    head = 0
+    while head < len(queue):
+        u = queue[head]
+        head += 1
+        total_xor_sum ^= g[u]
+        
+        for v, w in adj[u]:
+            if not visited[v]:
+                visited[v] = True
+                g[v] = g[u] ^ w
+                queue.append(v)
+                
+    print(total_xor_sum)
+
+if __name__ == "__main__":
+    solve()
