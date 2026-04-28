@@ -1,0 +1,29 @@
+import sys
+
+def Minmax(A, B):
+    k_max = A - (B - 1)
+    max_conn = (k_max * (k_max - 1)) // 2
+    q = A // B  
+    r = A % B   
+    def combinations_2(n):
+        if n < 2:
+            return 0
+        return (n * (n - 1)) // 2
+    
+    min_conn = (r * combinations_2(q + 1)) + ((B - r) * combinations_2(q))
+    
+    return min_conn, max_conn
+
+def main():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    A = int(input_data[0])
+    B = int(input_data[1])
+    
+    min_res, max_res = Minmax(A, B)
+    print(f"{min_res} {max_res}")
+
+if __name__ == "__main__":
+    main()
