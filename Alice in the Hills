@@ -1,0 +1,40 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    R = int(input_data[0])
+    C = int(input_data[1])
+    
+    matrix = []
+    cells_by_height = {}
+    
+    idx = 2
+    for r in range(R):
+        row = []
+        for c in range(C):
+            h = int(input_data[idx])
+            row.append(h)
+            if h not in cells_by_height:
+                cells_by_height[h] = []
+            cells_by_height[h].append((r, c))
+            idx += 1
+        matrix.append(row)
+    sorted_heights = sorted(cells_by_height.keys())
+    row_max = [0] * R
+    col_max = [0] * C
+    for h in sorted_heights:
+        current_updates = []
+        for r, c in cells_by_height[h]:
+            best_prev = max(row_max[r], col_max[c])
+            current_updates.append((r, c, best_prev + 1))
+        for r, c, val in current_updates:
+            row_max[r] = max(row_max[r], val)
+            col_max[c] = max(col_max[c], val)
+            
+    print(max(max(row_max), max(col_max)))
+
+if __name__ == "__main__":
+    solve()
