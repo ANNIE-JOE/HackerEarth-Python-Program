@@ -1,0 +1,26 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    a = list(map(int, input_data[1:]))
+    if n < 2:
+        print(0)
+        return
+    min_total_or_cost = float('inf')
+    for i in range(n):
+        current_or_accumulation = 0
+        pivot = a[i]
+        for j in range(n):
+            if i == j:
+                continue
+            cost = 2 * (pivot | a[j])
+            current_or_accumulation |= cost
+        if current_or_accumulation < min_total_or_cost:
+            min_total_or_cost = current_or_accumulation
+    print(min_total_or_cost)
+
+if __name__ == "__main__":
+    solve()
