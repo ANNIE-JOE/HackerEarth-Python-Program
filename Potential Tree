@@ -1,0 +1,77 @@
+import sys
+sys.setrecursionlimit(300000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    t_cases = int(input_data[ptr])
+    ptr += 1
+    
+    output = []
+    for _ in range(t_cases):
+        n = int(input_data[ptr])
+        ptr += 1
+        adj = [[] for _ in range(n)]
+        for _ in range(n - 1):
+            u = int(input_data[ptr])
+            v = int(input_data[ptr+1])
+            ptr += 2
+            adj[u].append(v)
+            adj[v].append(u)
+            
+        if n == 1:
+            output.append(str(0 % 2))
+            continue
+        dp = [0] * n
+        
+        def dfs_down(u, p):
+            is_leaf = True
+            nz_count = 0
+            for v in adj[u]:
+                if v == p: continue
+                is_leaf = False
+                dfs_down(v, u)
+                if dp[v] != 0:
+                    nz_count += 1
+            
+            if is_leaf:
+                dp[u] = u % 2
+            else:
+                dp[u] = nz_count
+
+        dfs_down(0, -1)
+
+        ans = [0] * n
+        
+        def dfs_up(u, p, up_pot):
+            total_nz = 0
+            if p != -1:
+                if up_pot != 0:
+                    total_nz += 1
+            
+            for v in adj[u]:
+                if v == p: continue
+                if dp[v] != 0:
+                    total_nz += 1
+            
+            ans[u] = total_nz
+            
+            for v in adj[u]:
+                if v == p: continue
+                if len(adj[u]) == 1:
+                    new_up_pot = u % 2
+                else:
+                    new_up_pot = total_nz - (1 if dp[v] != 0 else 0)
+                
+                dfs_up(v, u, new_up_pot)
+
+        dfs_up(0, -1, 0)
+        output.append(" ".join(map(str, ans)))
+
+    sys.stdout.write("\n".join(output) + "\n")
+
+if __name__ == "__main__":
+    solve()
