@@ -1,0 +1,66 @@
+import sys
+sys.setrecursionlimit(200000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    idx = 0
+    n = int(input_data[idx])
+    q = int(input_data[idx+1])
+    idx += 2
+    colors = list(map(int, input_data[idx:idx+n]))
+    idx += n
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(n - 1):
+        u = int(input_data[idx])
+        v = int(input_data[idx+1])
+        adj[u].append(v)
+        adj[v].append(u)
+        idx += 2
+    query_nodes = list(map(int, input_data[idx:idx+q]))
+    target_count = [0] * (n + 1)
+    for node in query_nodes:
+        target_count[node] += 1
+    parent = [0] * (n + 1)
+    order = []
+    stack = [1]
+    parent[1] = -1 
+    
+    bfs_q = [1]
+    visited = [False] * (n + 1)
+    visited[1] = True
+    curr = 0
+    while curr < len(bfs_q):
+        u = bfs_q[curr]
+        curr += 1
+        order.append(u)
+        for v in adj[u]:
+            if not visited[v]:
+                visited[v] = True
+                parent[v] = u
+                bfs_q.append(v)
+    total_flips = [0] * (n + 1)
+    for i in range(1, n + 1):
+        total_flips[i] = target_count[i]
+    for i in range(n - 1, -1, -1):
+        u = order[i]
+        p = parent[u]
+        if p != -1:
+            total_flips[p] += total_flips[u]
+    black_count = 0
+    for i in range(1, n + 1):
+        initial_color = colors[i-1]
+        if total_flips[i] % 2 == 1:
+            final_color = 1 - initial_color
+        else:
+            final_color = initial_color
+            
+        if final_color == 1:
+            black_count += 1
+            
+    print(black_count)
+
+if __name__ == "__main__":
+    solve()
