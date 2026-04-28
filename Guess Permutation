@@ -1,0 +1,35 @@
+import sys
+
+def solve():
+    try:
+        line1 = sys.stdin.readline()
+        if not line1: return
+        n = int(line1.strip())
+        a = list(map(int, sys.stdin.readline().split()))
+    except ValueError:
+        return
+    r = [0] * (n + 1)
+    for i in range(n):
+        r[i+1] = r[i] + a[i]
+    min_val = min(r)
+    offset = 1 - min_val
+    p = [x + offset for x in r]
+    is_valid = True
+    seen = [False] * (n + 2)
+    for num in p:
+        if 1 <= num <= n + 1 and not seen[num]:
+            seen[num] = True
+        else:
+            is_valid = False
+            break
+            
+    if is_valid:
+        print(*(p))
+    else:
+        print("-1")
+
+line = sys.stdin.readline()
+if line:
+    t = int(line.strip())
+    for _ in range(t):
+        solve()
