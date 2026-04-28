@@ -1,0 +1,65 @@
+import sys
+from collections import Counter
+
+def solve():
+    input = sys.stdin.read().split()
+    if not input: return
+    
+    ptr = 0
+    t = int(input[ptr])
+    ptr += 1
+    
+    results = []
+    for _ in range(t):
+        n = int(input[ptr])
+        ptr += 1
+        nums = list(map(int, input[ptr:ptr+n]))
+        ptr += n
+        
+        nums.sort(reverse=True)
+        counts = Counter(nums)
+        possible = True
+        current_nums = nums
+        max_idx = 0
+        
+        while n > 2:
+            while max_idx < len(nums) and counts[nums[max_idx]] == 0:
+                max_idx += 1
+            
+            m1 = nums[max_idx] 
+            counts[m1] -= 1
+            while max_idx < len(nums) and counts[nums[max_idx]] == 0:
+                max_idx += 1
+            
+            if max_idx >= len(nums):
+                possible = False
+                break
+                
+            x = nums[max_idx] 
+            y = m1 - x
+            m2 = x - y 
+            if counts[m2] > 0:
+                counts[m2] -= 1
+                n -= 2
+            else:
+                possible = False
+                break
+        
+        if possible:
+            remaining = []
+            for val in nums:
+                while counts[val] > 0:
+                    remaining.append(val)
+                    counts[val] -= 1
+            
+            if len(remaining) == 2:
+                results.append(f"YES\n{remaining[0]} {remaining[1]}")
+            else:
+                results.append("NO")
+        else:
+            results.append("NO")
+
+    sys.stdout.write("\n".join(results) + "\n")
+
+if __name__ == "__main__":
+    solve()
