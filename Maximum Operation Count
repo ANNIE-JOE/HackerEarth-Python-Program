@@ -1,0 +1,26 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    k = int(input_data[1])
+    a = list(map(int, input_data[2:]))
+    a.sort()
+    l = 0
+    r = n // 2
+    operations = 0
+    while l < n // 2 and r < n:
+        if a[r] - a[l] >= k:
+            operations += 1
+            l += 1
+            r += 1
+        else:
+            r += 1
+            
+    print(operations)
+
+if __name__ == "__main__":
+    solve()
