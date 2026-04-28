@@ -1,0 +1,26 @@
+import sys
+
+def solution(N, S, comments):
+    count = 0
+    keyword = S.lower()
+    
+    for comment in comments:
+        lower_comment = comment.lower()
+        words = lower_comment.split('_')
+        
+        if keyword in words:
+            count += 1
+            
+    return count
+
+def main():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    n = int(input_data[0])
+    s = input_data[1]
+    comments = input_data[2:]
+    print(solution(n, s, comments[:n]))
+
+if __name__ == "__main__":
+    main()
