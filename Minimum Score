@@ -1,0 +1,30 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    k = int(input_data[1])
+    a = list(map(int, input_data[2:]))
+    total_score = 0
+    intervals = []
+    for i in range(k - 1):
+        intervals.append((i + 1, i + 1))
+    last_start = k - 1
+    last_end = n - 1
+    intervals.append((last_start + 1, last_end + 1))
+    subarray = a[last_start : last_end + 1]
+    if not subarray:
+        last_score = 0
+    else:
+        last_score = max(subarray) - min(subarray)
+    
+    total_score = last_score
+    print(total_score)
+    for start, end in intervals:
+        print(f"{start} {end}")
+
+if __name__ == "__main__":
+    solve()
