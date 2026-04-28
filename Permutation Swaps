@@ -1,0 +1,41 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    ptr = 0
+    t = int(input_data[ptr])
+    ptr += 1
+    
+    results = []
+    for _ in range(t):
+        n = int(input_data[ptr])
+        ptr += 1
+        a = list(map(int, input_data[ptr : ptr + n]))
+        ptr += n
+        expected_sum = n * (n + 1) // 2
+        if sum(a) != expected_sum:
+            results.append("NO")
+            continue
+        a.sort()
+        possible = True
+        current_sum = 0
+        required_sum = 0
+        for i in range(n):
+            current_sum += a[i]
+            required_sum += (i + 1)
+            if current_sum < required_sum:
+                possible = False
+                break
+        
+        if possible:
+            results.append("YES")
+        else:
+            results.append("NO")
+            
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    solve()
