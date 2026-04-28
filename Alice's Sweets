@@ -1,0 +1,35 @@
+import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    a = sorted(map(int, input_data[1 : n+1]))
+    b = sorted(map(int, input_data[n+1 : 2*n+1]))
+    c = sorted(map(int, input_data[2*n+1 : 3*n+1]))
+    
+    i, j, k = 0, 0, 0
+    min_diff = float('inf')
+    while i < n and j < n and k < n:
+        val_a, val_b, val_c = a[i], b[j], c[k]
+        current_max = max(val_a, val_b, val_c)
+        current_min = min(val_a, val_b, val_c)
+        current_val = abs(val_a - val_b) + abs(val_b - val_c) + abs(val_c - val_a)
+        
+        if current_val < min_diff:
+            min_diff = current_val
+        if min_diff == 0:
+            break
+        if val_a == current_min:
+            i += 1
+        elif val_b == current_min:
+            j += 1
+        else:
+            k += 1
+            
+    print(min_diff)
+
+if __name__ == "__main__":
+    solve()
