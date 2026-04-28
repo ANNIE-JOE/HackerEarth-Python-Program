@@ -1,0 +1,33 @@
+import sys
+from collections import Counter
+
+def solve():
+    line = sys.stdin.readline()
+    if not line:
+        return
+    t = int(line.strip())
+    
+    for _ in range(t):
+        n_line = sys.stdin.readline()
+        if not n_line:
+            break
+        n = int(n_line.strip())
+        a_line = sys.stdin.readline()
+        if not a_line:
+            break
+        a = list(map(int, a_line.split()))
+        b = []
+        for idx in range(n):
+            b.append(a[idx] ^ (idx + 1))
+        counts = Counter(b)
+        
+        total_pairs = 0
+        for val in counts:
+            f = counts[val]
+            if f >= 2:
+                total_pairs += (f * (f - 1)) // 2
+                
+        print(total_pairs)
+
+if __name__ == "__main__":
+    solve()
