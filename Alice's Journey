@@ -1,0 +1,55 @@
+import sys
+sys.setrecursionlimit(300000)
+
+def get_farthest(start_node, adj, n):
+    distances = [-1] * (n + 1)
+    distances[start_node] = 0
+    queue = [start_node]
+    
+    farthest_node = start_node
+    max_dist = 0
+    
+    head = 0
+    while head < len(queue):
+        u = queue[head]
+        head += 1
+        
+        if distances[u] > max_dist:
+            max_dist = distances[u]
+            farthest_node = u
+            
+        for v, weight in adj[u]:
+            if distances[v] == -1:
+                distances[v] = distances[u] + weight
+                queue.append(v)
+                
+    return farthest_node, max_dist
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    if n == 1:
+        print(0)
+        return
+        
+    adj = [[] for _ in range(n + 1)]
+    total_weight = 0
+    
+    ptr = 1
+    for _ in range(n - 1):
+        u = int(input_data[ptr])
+        v = int(input_data[ptr+1])
+        w = int(input_data[ptr+2])
+        adj[u].append((v, w))
+        adj[v].append((u, w))
+        total_weight += w
+        ptr += 3
+    node_u, _ = get_farthest(1, adj, n)
+    _, diameter = get_farthest(node_u, adj, n)
+    print(2 * total_weight - diameter)
+
+if __name__ == "__main__":
+    solve()
