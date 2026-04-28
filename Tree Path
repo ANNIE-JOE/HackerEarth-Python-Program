@@ -1,0 +1,65 @@
+import sys
+sys.setrecursionlimit(200000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    N = int(input_data[0])
+    K = int(input_data[1])
+    W = list(map(int, input_data[2:2+N]))
+    
+    adj = [[] for _ in range(N)]
+    ptr = 2 + N
+    for _ in range(N - 1):
+        u = int(input_data[ptr]) - 1
+        v = int(input_data[ptr+1]) - 1
+        ptr += 2
+        adj[u].append(v)
+        adj[v].append(u)
+
+    def get_max_path(limit):
+        visited = [False] * N
+        
+        def dfs(u, p):
+            visited[u] = True
+            max1, max2 = 0, 0
+            
+            for v in adj[u]:
+                if v == p or W[v] > limit:
+                    continue
+                d = dfs(v, u) + 1
+                if d > max1:
+                    max2 = max1
+                    max1 = d
+                elif d > max2:
+                    max2 = d
+            nonlocal global_best
+            global_best = max(global_best, max1 + max2)
+            return max1
+
+        global_best = 0
+        for i in range(N):
+            if not visited[i] and W[i] <= limit:
+                dfs(i, -1)
+                if global_best >= K:
+                    return True
+        return False
+    unique_weights = sorted(list(set(W)))
+    low = 0
+    high = len(unique_weights) - 1
+    ans = -1
+
+    while low <= high:
+        mid = (low + high) // 2
+        if get_max_path(unique_weights[mid]):
+            ans = unique_weights[mid]
+            high = mid - 1
+        else:
+            low = mid + 1
+
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
